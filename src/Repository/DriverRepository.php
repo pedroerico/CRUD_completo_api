@@ -3,7 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Driver;
+use App\Model\DriverReportFiltersModel;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -37,5 +39,48 @@ class DriverRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function findByPlate(string $plate)
+    {
+        return $this->createQueryBuilder('d')
+            ->join('d.vehicle', 'v')
+            ->andWhere('v.plate = :plate')->setParameter('plate', $plate)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param DriverReportFiltersModel $driverReportFiltersModel
+     * @return QueryBuilder
+     */
+    public function findAllQueryBuilder(DriverReportFiltersModel $driverReportFiltersModel): QueryBuilder
+    {
+        $qb = $this->createQueryBuilder('d');
+        if ($driverReportFiltersModel->name) {
+            $qb
+                ->andWhere('d.name = :name')
+                ->setParameter('name', $driverReportFiltersModel->name);
+        }
+
+        if ($driverReportFiltersModel->document) {
+            $qb
+                ->andWhere('d.document = :document')
+                ->setParameter('document', $driverReportFiltersModel->document);
+        }
+
+        if ($driverReportFiltersModel->plate) {
+            $qb
+                ->join('d.vehicle', 'v')
+                ->andWhere('v.plate = :plate')
+                ->setParameter('plate', $driverReportFiltersModel->plate);
+        }
+
+
+        if ($driverReportFiltersModel->sort_by) {
+            $qb->orderBy("d.$driverReportFiltersModel->sort_by", $driverReportFiltersModel->sort_order);
+        }
+
+        return $qb;
     }
 }

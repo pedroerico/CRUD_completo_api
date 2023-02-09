@@ -4,3 +4,8 @@ auth:
   error:
     user_existent: Este usuário já existe
     password_not_match: As senhas não coincidem
+
+driver:
+  error:
+    plate_linked: Placa já vinculada
+    document_used: Document já utilizado

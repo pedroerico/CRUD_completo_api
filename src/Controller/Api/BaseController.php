@@ -8,6 +8,8 @@ use App\Model\Paginator\PaginatorModel;
 use App\service\UserService;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
+use Knp\Component\Pager\Pagination\PaginationInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,12 +24,14 @@ class BaseController extends AbstractController
      * @param TranslatorInterface $translator
      * @param SerializerInterface $serializer
      * @param UserService $userService
+     * @param PaginatorInterface $paginator
      */
     public function __construct(
         protected ManagerRegistry $doctrine,
         protected TranslatorInterface $translator,
         protected SerializerInterface $serializer,
-        protected UserService $userService
+        protected UserService $userService,
+        protected PaginatorInterface $paginator,
     ) {
     }
 
@@ -128,5 +132,32 @@ class BaseController extends AbstractController
         $apiProblem = new ApiProblem(Response::HTTP_UNPROCESSABLE_ENTITY, ApiProblem::TYPE_VALIDATION_ERROR);
         $apiProblem->set(name: 'errors', value: $errors);
         throw new ApiProblemException($apiProblem);
+    }
+
+    /**
+     * @param Request $request
+     * @param QueryBuilder $queryBuilder
+     * @param string|null $format
+     * @param array|null $context
+     * @return PaginationInterface
+     */
+    protected function getPaginationItems(
+        Request $request,
+        QueryBuilder $queryBuilder,
+        ?array $context = [],
+        ?string $format = 'json'
+    ): PaginationInterface {
+        $paginatorModel = new PaginatorModel();
+        $form = $this->createForm($paginatorModel::FORM_TYPE, $paginatorModel);
+        $this->validateForm($form, $request);
+
+        $pagination = $this->paginator->paginate($queryBuilder, $paginatorModel->page, $paginatorModel->limit);
+        $data = [];
+        foreach ($pagination->getItems() as $item) {
+            $data[] = json_decode($this->serializer->serialize($item, $format, $context));
+        }
+        $pagination->setItems($data);
+
+        return $pagination;
     }
 }
