@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\DriverRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -42,6 +44,14 @@ class Driver
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['show'])]
     private ?Vehicle $vehicle = null;
+
+    #[ORM\OneToMany(mappedBy: 'driver', targetEntity: Coordinate::class)]
+    private Collection $coordinate;
+
+    public function __construct()
+    {
+        $this->coordinate = new ArrayCollection();
+    }
 
     /**
      * @return int
@@ -104,6 +114,43 @@ class Driver
     public function setVehicle(?Vehicle $vehicle): Driver
     {
         $this->vehicle = $vehicle;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Coordinate>
+     */
+    public function getCoordinates(): Collection
+    {
+        return $this->coordinate;
+    }
+
+    /**
+     * @param Coordinate $coordinate
+     * @return Driver
+     */
+    public function addCoordinate(Coordinate $coordinate): Driver
+    {
+        if (!$this->coordinate->contains($coordinate)) {
+            $this->coordinate->add($coordinate);
+            $coordinate->setDriver($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param Coordinate $coordinate
+     * @return Driver
+     */
+    public function removeCoordinate(Coordinate $coordinate): Driver
+    {
+        if ($this->coordinate->removeElement($coordinate)) {
+            if ($coordinate->getDriver() === $this) {
+                $coordinate->setDriver(null);
+            }
+        }
 
         return $this;
     }
