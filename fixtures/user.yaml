@@ -1,0 +1,4 @@
+App\Entity\User:
+  user:
+    email: <catchPhrase()>
+    password: <sentence(6)>
