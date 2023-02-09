@@ -8,4 +8,5 @@
 /var/
 /vendor/
 .idea
+/docker/logs/
 ###< symfony/framework-bundle ###
