@@ -1,0 +1,5 @@
+language: Português
+
+auth:
+  error:
+    password_not_match: As senhas não coincidem

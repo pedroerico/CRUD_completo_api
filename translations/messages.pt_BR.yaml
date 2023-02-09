@@ -1,0 +1,6 @@
+language: Português
+
+auth:
+  error:
+    user_existent: Este usuário já existe
+    password_not_match: As senhas não coincidem
