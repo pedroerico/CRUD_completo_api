@@ -7,6 +7,7 @@ use App\Exception\CustomUnprocessableEntityException;
 use App\Form\DriverType;
 use App\Form\DriverUpdateType;
 use App\Form\DriverReportFiltersType;
+use App\Message\CoordinateMessage;
 use App\Model\DriverModel;
 use App\Model\DriverReportFiltersModel;
 use App\Model\Paginator\PaginatorViewModel;
@@ -14,6 +15,7 @@ use App\Repository\DriverRepository;
 use App\service\DriverService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Exception\ValidatorException;
 
@@ -76,6 +78,15 @@ class DriverController extends BaseController
     public function delete(Driver $driver, DriverRepository $driverRepository): Response
     {
         $driverRepository->remove($driver, true);
+
+        return $this->json([]);
+    }
+
+    #[Route('/{driver}/coordinates', name: 'app_driver_coordinates', methods: ['POST'])]
+    public function coordinates(Driver $driver, Request $request, MessageBusInterface $bus): Response
+    {
+        $message = new CoordinateMessage($driver, $request->toArray());
+        $bus->dispatch($message);
 
         return $this->json([]);
     }
