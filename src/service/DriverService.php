@@ -2,6 +2,7 @@
 
 namespace App\service;
 
+use App\Entity\Coordinate;
 use App\Entity\Driver;
 use App\Entity\Vehicle;
 use App\Exception\CustomUnprocessableEntityException;
@@ -66,6 +67,18 @@ final class DriverService
         $entityManager->flush();
 
         return $driver;
+    }
+
+    public function createCoordinate(string $document, $data): void
+    {
+        $driver = $this->getDriverRepository()->findOneBy(['document' => $document]);
+        $entityManager = $this->doctrine->getManager();
+        $coordinate = new Coordinate();
+        $coordinate->setDriver($driver);
+        $coordinate->setLatitude($data['latitude']);
+        $coordinate->setLongitude($data['longitude']);
+        $entityManager->persist($coordinate);
+        $entityManager->flush();
     }
 
     private function checkPlate(DriverModel $driverModel, ?Driver $driver = null): void
