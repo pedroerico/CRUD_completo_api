@@ -12,6 +12,8 @@ php /var/www/bin/console doctrine:database:create --if-not-exists --no-interacti
 
 php /var/www/bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration
 
+php /var/www/bin/console lexik:jwt:generate-keypair --skip-if-exists --no-interaction
+
 chmod -R o+s+w /var/www
 
 exec "$@"
