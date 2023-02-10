@@ -1,0 +1,71 @@
+nelmio_api_doc:
+    models: { use_jms: false }
+    documentation:
+        info:
+            title: Fabrica704-API
+            description: Documentação da API REST
+            version: 1.0.0
+        components:
+            parameters:
+                page: # Can be referenced via '#/components/parameters/page'
+                    name: page
+                    in: query
+                    description: Número da página atual.
+                    required: false
+                    schema:
+                        type: integer
+                        format: int32
+                        minimum: 1
+                        default: 1
+                limit: # Can be referenced as '#/components/parameters/limit'
+                    name: limit
+                    in: query
+                    description: Número máximo de itens a serem devolvidos.
+                    required: false
+                    schema:
+                        type: integer
+                        format: int32
+                        minimum: 1
+                        maximum: 500
+                        default: 10
+                sortBy: # Can be referenced as '#/components/parameters/sortBy'
+                    name: sort_by
+                    in: query
+                    description: Retorna o resultado por ordem.
+                    required: false
+                    schema:
+                        type: integer
+                        format: int32
+                        enum: [id]
+                sortOrder: # Can be referenced as '#/components/parameters/sortOrder'
+                    name: sort_order
+                    in: query
+                    description: Retorna o resultado por ordem de classificação.
+                        * `asc` - Ascendente, de A a Z
+                        * `desc` - Descendente, de Z a A
+                    required: false
+                    schema:
+                        enum: [asc, desc]
+                driver:
+                    name: driver
+                    in: path
+                    description: ID do motorista.
+                    required: true
+                    schema:
+                        type: integer
+                        format: int32
+
+            securitySchemes:
+                Bearer:
+                    type: http
+                    scheme: bearer
+                    bearerFormat: JWT
+                    in: header
+        security:
+            - Bearer: []
+
+    areas: # to filter documented areas
+        path_patterns:
+            - ^/api(/driver|/auth)
+        #host_patterns:
+        #    - ^/api
