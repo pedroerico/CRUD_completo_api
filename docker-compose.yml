@@ -27,21 +27,6 @@ services:
     networks:
       - bridge
 
-  rabbitmq:
-    container_name: rabbitmq
-    image: rabbitmq:3.11-management
-    volumes:
-      - /docker/rabbitmq/data/:/var/lib/rabbitmq/
-    ports:
-      - '5672:5672'
-      - '15672:15672'
-    environment:
-      - RABBITMQ_DEFAULT_USER=admin
-      - RABBITMQ_DEFAULT_PASS=123456
-    networks:
-      - bridge
-    restart: always
-
   nginx:
     container_name: nginx
     build:
