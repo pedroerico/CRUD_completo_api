@@ -6,6 +6,7 @@ use App\Repository\CoordinateRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CoordinateRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Coordinate
 {
     use DatetimeTrait;
@@ -19,16 +20,16 @@ class Coordinate
     private ?int $id = null;
 
     /**
-     * @var int|null
+     * @var string|null
      */
     #[ORM\Column]
-    private ?int $latitude = null;
+    private ?string $latitude = null;
 
     /**
-     * @var int|null
+     * @var string|null
      */
     #[ORM\Column]
-    private ?int $longitude = null;
+    private ?string $longitude = null;
 
     /**
      * @var driver|null
@@ -45,18 +46,18 @@ class Coordinate
     }
 
     /**
-     * @return int|null
+     * @return string|null
      */
-    public function getLatitude(): ?int
+    public function getLatitude(): ?string
     {
         return $this->latitude;
     }
 
     /**
-     * @param int $latitude
+     * @param string $latitude
      * @return Coordinate
      */
-    public function setLatitude(int $latitude): Coordinate
+    public function setLatitude(string $latitude): Coordinate
     {
         $this->latitude = $latitude;
 
@@ -64,18 +65,18 @@ class Coordinate
     }
 
     /**
-     * @return int|null
+     * @return string|null
      */
-    public function getLongitude(): ?int
+    public function getLongitude(): ?string
     {
         return $this->longitude;
     }
 
     /**
-     * @param int $longitude
+     * @param string $longitude
      * @return Coordinate
      */
-    public function setLongitude(int $longitude): Coordinate
+    public function setLongitude(string $longitude): Coordinate
     {
         $this->longitude = $longitude;
 
