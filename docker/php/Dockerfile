@@ -5,7 +5,7 @@ COPY wait-for-it.sh /usr/bin/wait-for-it
 RUN chmod +x /usr/bin/wait-for-it
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends libssl-dev zlib1g-dev curl git unzip netcat libxml2-dev libpq-dev libzip-dev librabbitmq-dev && \
+    apt-get install -y --no-install-recommends libssl-dev zlib1g-dev curl git unzip netcat libxml2-dev libpq-dev libzip-dev librabbitmq-dev supervisor && \
     pecl install apcu && \
     pecl install amqp \
 
@@ -21,7 +21,11 @@ COPY --from=composer /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www
 
+RUN mkdir -p /var/log/supervisor
+
 COPY docker-entrypoint.sh /web/docker-entrypoint.sh
+COPY messenger-worker.conf /etc/supervisor/conf.d/messenger-worker.conf
+
 RUN chmod +x /web/docker-entrypoint.sh
 
 CMD php-fpm

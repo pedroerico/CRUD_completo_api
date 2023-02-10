@@ -23,6 +23,7 @@ services:
       - database
     volumes:
       - ./:/var/www
+      - ./docker/logs/supervisor:/var/log/supervisor
     networks:
       - bridge
 

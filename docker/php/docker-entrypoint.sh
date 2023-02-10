@@ -22,4 +22,6 @@ php /var/www/bin/console lexik:jwt:generate-keypair --skip-if-exists --no-intera
 
 chmod -R o+s+w /var/www
 
+service supervisor start
+
 exec "$@"
