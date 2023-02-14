@@ -66,7 +66,12 @@ class BaseController extends AbstractController
         }
 
         $clearMissing = $request->getMethod() != 'PATCH';
-        $form->submit($data, $clearMissing);
+        try {
+            $form->submit($data, $clearMissing);
+        } catch(\InvalidArgumentException $e) {
+            $this->throwApiProblemException([$e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
     }
 
     /**
